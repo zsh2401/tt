@@ -14,11 +14,12 @@ elif torch.backends.mps.is_available():
     device = "mps"
 
 # 课后题的超参
-# lr_period = 50
-# lr_decay = 0.1
-# lr = 0.1
-# num_epochs = 100
-# batch_size = 128
+lr_period = 50
+lr_decay = 0.1
+lr = 0.1
+num_epochs = 100
+batch_size = 128
+wd = 5e-4
 
 # 正常实验的超参
 lr_period = 4
@@ -82,7 +83,9 @@ for epoch in range(1,num_epochs + 1):
     train_losses.append(train_loss)
     val_losses.append(val_loss)
     val_accuracies.append(val_acc)
-    file_name = f"{datetime.datetime.now().strftime('%Y-%m-%d-%H_%M_%S')}-{epoch}-{val_acc * 100:.2f}-{val_loss:.4f}.pth"
+    file_name = f"checkpoints/{datetime.datetime.now().strftime('%Y-%m-%d-%H_%M_%S')}-{epoch}-{val_acc * 100:.2f}-{val_loss:.4f}.pth"
+    if epoch % 5 != 0:
+        continue
     torch.save({
         "model": model,
         "optimizer": optimizer.state_dict(),

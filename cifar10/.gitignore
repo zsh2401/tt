@@ -2,3 +2,4 @@ dataset
 *.pth
 *.zip
 submission.csv
+checkpoints

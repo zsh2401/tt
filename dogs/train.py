@@ -33,7 +33,8 @@ train_loader = DataLoader(DogDataset(0, 0.8), batch_size=batch_size, shuffle=Tru
 val_loader = DataLoader(DogDataset(0.8, 1), batch_size=batch_size, shuffle=True)
 
 model = DogClassifier()
-optimizer = torch.optim.SGD(model.parameters(), lr=lr,momentum=0.9,weight_decay=wd)
+optimizer = torch.optim.SGD((param for param in model.parameters()
+                               if param.requires_grad), lr=lr,momentum=0.9,weight_decay=wd)
 scheduler = torch.optim.lr_scheduler.StepLR(optimizer, lr_period, lr_decay)
 criterion = torch.nn.CrossEntropyLoss().to(device)
 # criterion.sate
