@@ -6,7 +6,6 @@ from PIL import Image
 class CifarDataset(Dataset):
     def __init__(self, start_percent, end_percent) -> None:
         super().__init__()
-        self.cache = {}
         self.data = split_dataset(start_percent, end_percent)
         self.transform = TV.Compose([
             # 在高度和宽度上将图像放大到40像素的正方形
@@ -69,6 +68,5 @@ def label2id(label):
     for i in range(len(classes)):
         if label == classes[i]:
             return numeric_labels[i]
-    return label
 
-print(id2label(0),label2id("airplane"))
+    raise "Label not found"

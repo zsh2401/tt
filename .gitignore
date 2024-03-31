@@ -1,3 +1,5 @@
 .DS_Store
 *.pyc
+*.pth
+dataset
 __pycache__

@@ -1,11 +1,12 @@
 #!/usr/bin/env python
+import datetime
+
 import torch
 from torch.utils.data import DataLoader
 from tqdm import tqdm
-from dataset import CifarDataset
-from torch.utils.data import Dataset, DataLoader
-from model import Cifar18
-import datetime
+
+from dataset import DogDataset
+from model import DogClassifier
 
 device = "cpu"
 if torch.cuda.is_available():
@@ -21,10 +22,10 @@ num_epochs = 20
 
 batch_size = 256
 
-train_loader = DataLoader(CifarDataset(0, 0.8), batch_size=batch_size, shuffle=True)
-val_loader = DataLoader(CifarDataset(0.8, 1), batch_size=batch_size, shuffle=True)
+train_loader = DataLoader(DogDataset(0, 0.8), batch_size=batch_size, shuffle=True)
+val_loader = DataLoader(DogDataset(0.8, 1), batch_size=batch_size, shuffle=True)
 
-model = Cifar18()
+model = DogClassifier()
 optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 scheduler = torch.optim.lr_scheduler.StepLR(optimizer, lr_period, lr_decay)
 criterion = torch.nn.CrossEntropyLoss().to(device)
