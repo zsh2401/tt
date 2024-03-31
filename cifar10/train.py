@@ -14,12 +14,12 @@ elif torch.backends.mps.is_available():
     device = "mps"
 
 # 课后题的超参
-lr_period = 50
-lr_decay = 0.1
-lr = 0.1
-num_epochs = 100
-batch_size = 128
-wd = 5e-4
+# lr_period = 50
+# lr_decay = 0.1
+# lr = 0.1
+# num_epochs = 100
+# batch_size = 128
+# wd = 5e-4
 
 # 正常实验的超参
 lr_period = 4

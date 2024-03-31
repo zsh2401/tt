@@ -13,9 +13,10 @@ class CifarDataset(Dataset):
             # 随机裁剪出一个高度和宽度均为40像素的正方形图像，
             # 生成一个面积为原始图像面积0.64～1倍的小正方形，
             # 然后将其缩放为高度和宽度均为32像素的正方形
-            TV.RandomResizedCrop(32, scale=(0.64, 1.0),
-                                 ratio=(1.0, 1.0)),
-            TV.RandomHorizontalFlip(),
+            # 不使用增广进行训练
+            # TV.RandomResizedCrop(32, scale=(0.64, 1.0),
+            #                      ratio=(1.0, 1.0)),
+            # TV.RandomHorizontalFlip(),
             TV.ToTensor(),
             # 标准化图像的每个通道
             TV.Normalize([0.4914, 0.4822, 0.4465],

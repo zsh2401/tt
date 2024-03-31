@@ -14,27 +14,28 @@ if torch.cuda.is_available():
 elif torch.backends.mps.is_available():
     device = "mps"
 
-# 课后题的超参
-# lr_period = 50
-# lr_decay = 0.1
-# lr = 0.1
-# num_epochs = 100
-# batch_size = 128
+# 自行优化的超参
+lr_period = 20
+lr_decay = 0.1
+lr = 0.01
+num_epochs = 50
+batch_size = 256
+wd = 5e-4
 
 # 正常实验的超参
-lr_period = 4
-lr_decay = 0.9
-wd = 5e-4
-lr = 2e-4
-num_epochs = 20
-batch_size = 32
+# lr_period = 4
+# lr_decay = 0.9
+# wd = 5e-4
+# lr = 2e-4
+# num_epochs = 20
+# batch_size = 32
 
 train_loader = DataLoader(DogDataset(0, 0.8), batch_size=batch_size, shuffle=True)
 val_loader = DataLoader(DogDataset(0.8, 1), batch_size=batch_size, shuffle=True)
 
 model = DogClassifier()
-optimizer = torch.optim.SGD((param for param in model.parameters()
-                               if param.requires_grad), lr=lr,momentum=0.9,weight_decay=wd)
+optimizer = torch.optim.Adam((param for param in model.parameters()
+                               if param.requires_grad), lr=lr,weight_decay=wd)
 scheduler = torch.optim.lr_scheduler.StepLR(optimizer, lr_period, lr_decay)
 criterion = torch.nn.CrossEntropyLoss().to(device)
 # criterion.sate
@@ -84,7 +85,9 @@ for epoch in range(1,num_epochs + 1):
     train_losses.append(train_loss)
     val_losses.append(val_loss)
     val_accuracies.append(val_acc)
-    file_name = f"{datetime.datetime.now().strftime('%Y-%m-%d-%H_%M_%S')}-{epoch}-{val_acc * 100:.2f}-{val_loss:.4f}.pth"
+    file_name = f"checkpoints/{datetime.datetime.now().strftime('%Y-%m-%d-%H_%M_%S')}-{epoch}-{val_acc * 100:.2f}-{val_loss:.4f}.pth"
+    if epoch % 5 != 0:
+        continue
     torch.save({
         "model": model,
         "optimizer": optimizer.state_dict(),

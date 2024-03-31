@@ -2,7 +2,7 @@
 import torch
 import matplotlib.pyplot as plt
 
-pth = "./2024-04-01-01_41_45-20-76.79-0.0218.pth"
+pth = "checkpoints/2024-04-01-04_43_09-100-74.62-0.0060.pth"
 
 checkpoint = torch.load(pth)
 train_losses = checkpoint["train_losses"]

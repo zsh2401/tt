@@ -15,16 +15,16 @@ if torch.cuda.is_available():
 elif torch.backends.mps.is_available():
     device = "mps"
 
-<<<<<<< HEAD
-batch_size =90
+batch_size = 90
 # 默认超参最好的版本
-pth_name = "2024-04-01-01_41_45-20-76.79-0.0218.pth"
+# pth_name = "checkpoints/2024-04-01-01_41_45-20-76.79-0.0218.pth"
+
+# 无增广
+pth_name = "checkpoints/2024-04-01-04_38_40-20-81.37-0.0204.pth"
+# 100 epoch
+# pth_name = "checkpoints/2024-04-01-04_43_09-100-74.62-0.0060.pth"
+
 checkpoint = torch.load(pth_name)
-=======
-batch_size = 64
-pth_name = "2024-03-31-23_42_47-19-83.89-0.0022.pth"
-checkpoint = torch.load(pth_name, map_location=device)
->>>>>>> 0ecfa60fad91720c2a5ec56a65cd6a74112cff1f
 
 model = checkpoint["model"]
 model.to(device)
@@ -56,21 +56,15 @@ class Testset(Dataset):
 
 test_loader = DataLoader(Testset(), shuffle=False, batch_size=batch_size)
 
-with open("submission.csv", "w") as f:
+with open("无增广submission.csv", "w") as f:
     f.write("id,label")
     for ids, images in tqdm(test_loader, desc="Testing"):
         images = images.to(device)
         preds = []
         with torch.no_grad():
             outputs = model(images)
-<<<<<<< HEAD
         preds.extend(outputs.argmax(dim=1).type(torch.int32).cpu().numpy())
         for i, prediction in enumerate(preds):
             label = id2label(prediction)
             # print(f"\n{ids[i]},{label}")
-=======
-        _, predictions = torch.max(outputs.data, 1)
-        for i, prediction in enumerate(predictions):
-            label = id2label(prediction)
->>>>>>> 0ecfa60fad91720c2a5ec56a65cd6a74112cff1f
             f.write(f"\n{ids[i]},{label}")
