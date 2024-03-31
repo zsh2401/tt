@@ -1,13 +1,15 @@
 import os
 
 import torch
+import torchvision
 
 import torchvision.transforms as VT
 from PIL import Image
 from tqdm import tqdm
 from torch.utils.data import Dataset, DataLoader
 
-from dataset import id2label
+from cifar10.model import Cifar18
+from cifar10.dataset import id2label
 
 device = "cpu"
 if torch.cuda.is_available():
@@ -15,14 +17,13 @@ if torch.cuda.is_available():
 elif torch.backends.mps.is_available():
     device = "mps"
 
-batch_size = 64
-pth_name = "2024-03-31-23_42_47-19-83.89-0.0022.pth"
+batch_size = 1
+pth_name = "2024-03-31-22_27_56-0-67.11-0.0309.pth"
 checkpoint = torch.load(pth_name, map_location=device)
 
 model = checkpoint["model"]
 model.to(device)
 model.eval()
-# model.no_
 print(f"Loaded {pth_name}")
 
 
@@ -31,11 +32,13 @@ print(f"Loaded {pth_name}")
 class Testset(Dataset):
     def __init__(self):
         self.images = [(name[:-4], f"./dataset/test/{name}") for name in os.listdir("./dataset/test")]
-        self.transform = VT.Compose([
-            VT.Resize(40),
-            VT.ToTensor(),
-            VT.Normalize([0.4914, 0.4822, 0.4465],
-                         [0.2023, 0.1994, 0.2010])])
+        self.transform = torchvision.transforms.Compose([
+            torchvision.transforms.Resize(256),
+            # 从图像中心裁切224x224大小的图片
+            torchvision.transforms.CenterCrop(224),
+            torchvision.transforms.ToTensor(),
+            torchvision.transforms.Normalize([0.485, 0.456, 0.406],
+                                             [0.229, 0.224, 0.225])])
 
     def __len__(self):
         return len(self.images)
@@ -47,7 +50,7 @@ class Testset(Dataset):
         return id, image
 
 
-test_loader = DataLoader(Testset(), shuffle=False, batch_size=batch_size)
+test_loader = DataLoader(Testset(), shuffle=True, batch_size=batch_size)
 
 with open("submission.csv", "w") as f:
     f.write("id,label")
@@ -57,5 +60,5 @@ with open("submission.csv", "w") as f:
             outputs = model(images)
         _, predictions = torch.max(outputs.data, 1)
         for i, prediction in enumerate(predictions):
-            label = id2label(prediction)
+            label = id2label(prediction.int())
             f.write(f"\n{ids[i]},{label}")
