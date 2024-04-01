@@ -18,7 +18,7 @@ elif torch.backends.mps.is_available():
 
 batch_size =90
 # 默认超参最好的版本
-pth_name = "checkpoints/2024-04-01-00_26_38-4-64.35-0.0051.pth"
+pth_name = "checkpoints/2024-04-01-05_12_34-50-54.77-0.0076.pth"
 checkpoint = torch.load(pth_name)
 
 model = checkpoint["model"]
